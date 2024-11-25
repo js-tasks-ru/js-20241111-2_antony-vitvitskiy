@@ -15,13 +15,13 @@ export function trimSymbols(string, size) {
     let formattedString = string[0];
     let sameLetterCount = 1;
     for(const char of string) {
-      if (string[i] === formattedString[formattedString.length - 1]) {
+      if (char === formattedString[formattedString.length - 1]) {
         if (sameLetterCount < size) {
-          formattedString += string[i];
+          formattedString += char;
           sameLetterCount++;
         }
       } else {
-        formattedString += string[i];
+        formattedString += char;
         sameLetterCount = 1;
       }
     }
