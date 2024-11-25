@@ -14,7 +14,7 @@ export function trimSymbols(string, size) {
     
     let formattedString = string[0];
     let sameLetterCount = 1;
-    for(let i = 1; i < string.length; ++i) {
+    for(const char of string) {
       if (string[i] === formattedString[formattedString.length - 1]) {
         if (sameLetterCount < size) {
           formattedString += string[i];
