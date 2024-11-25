@@ -11,10 +11,6 @@ export function invertObj(obj) {
     let invertObj = {};
 
     for (const key in obj) {
-        if (Object(obj[key]) === obj[key]) {
-            return;
-        }
-
         invertObj[obj[key]] = key;
     }
 
