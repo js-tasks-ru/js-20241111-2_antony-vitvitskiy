@@ -32,18 +32,14 @@ export default class NotificationMessage {
         `);
     }
 
-    show(targetElement) {
+    show(container = document.body) {
         if (NotificationMessage.lastShownNotification) {
             NotificationMessage.lastShownNotification.destroy();
         }
         NotificationMessage.lastShownNotification = this;
 
-        if (!!targetElement) {
-            targetElement.appendChild(this.element);
-            return;
-        }
-        document.body.appendChild(this.element);
-        this.remove();
+        container.appendChild(this.element);
+        this.timerId = setTimeout(() => this.destroy(), this.duration);
     }
 
     remove() {
