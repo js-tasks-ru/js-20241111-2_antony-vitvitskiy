@@ -1,4 +1,4 @@
-export default class SortableTable {
+export default class SortableTableV1 {
   element;
   subElements = {}
   
@@ -10,14 +10,7 @@ export default class SortableTable {
   }
 
   sort(field, param) {
-    let headerConfigFieldIndex;
-    this.headerConfig.some((configColumn, index) => {
-      if(configColumn.id === field) {
-        headerConfigFieldIndex = index;
-        return true;
-      }
-      return false;
-    });
+    const headerConfigFieldIndex = this.headerConfig.findIndex((configColumn) => configColumn.id === field);
 
     let sorted;
     if (this.headerConfig[headerConfigFieldIndex].sortType === 'string') {
