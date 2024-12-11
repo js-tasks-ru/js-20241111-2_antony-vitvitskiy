@@ -5,11 +5,12 @@ export default class SortableTableV1 {
   constructor(headerConfig = [], data = []) {
       this.headerConfig = headerConfig;
       this.data = data;
+      this.isSortLocally = true;
       this.element = this.createElement(this.createTemplate());
       this.selectSubElements();
   }
 
-  sort(field, param) {
+  sortOnClient(field, param) {
     const headerConfigFieldIndex = this.headerConfig.findIndex((configColumn) => configColumn.id === field);
 
     let sorted;
@@ -26,6 +27,14 @@ export default class SortableTableV1 {
     }
 
     sorted.forEach(element => this.subElements.body.appendChild(element));
+  }
+
+  sort(id, order) {
+    if (this.isSortLocally) {
+      this.sortOnClient(id, order);
+    } else {
+      this.sortOnServer(id, order);
+    }
   }
 
   selectSubElements() {
