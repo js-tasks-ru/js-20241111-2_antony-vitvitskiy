@@ -1,4 +1,4 @@
-export default class ColumnChart {
+export default class ColumnChartV1 {
     constructor({
         data = [],
         label = '',
