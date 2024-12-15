@@ -61,7 +61,7 @@ export default class SortableTableV2 extends SortableTableV1 {
   }
 
   destroyListeners() {
-    this.subElements.header.removeEventListener('click', this.headerPointerDownHandler);
+    this.subElements.header.removeEventListener('pointerdown', this.headerPointerDownHandler);
   }
 
   destroy() {
