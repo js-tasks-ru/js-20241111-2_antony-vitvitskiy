@@ -7,6 +7,7 @@ export default class SortableTableV2 extends SortableTableV1 {
   } = {}) {
     super(headersConfig, data);
     this.arrowElement = this.createArrowElement();
+    this.handleScroll = this.handleScroll.bind(this);
     this.headerPointerDownHandler = this.handleHeaderPointerDown.bind(this);
     this.createListeners();
     this.sorted = sorted;
@@ -16,6 +17,10 @@ export default class SortableTableV2 extends SortableTableV1 {
       sortedColumn.dataset.order = sorted.order;
       sortedColumn.append(this.arrowElement);
     }
+  }
+
+  handleScroll(e) {
+
   }
 
   createArrowElement() {
