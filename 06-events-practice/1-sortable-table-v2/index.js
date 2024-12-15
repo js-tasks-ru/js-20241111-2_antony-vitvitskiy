@@ -51,7 +51,6 @@ export default class SortableTableV2 extends SortableTableV1 {
   }
 
   createListeners() {
-    this.handleScroll = this.handleScroll.bind(this);
     this.headerPointerDownHandler = this.handleHeaderPointerDown.bind(this);
     this.subElements.header.addEventListener('pointerdown', this.headerPointerDownHandler);
   }

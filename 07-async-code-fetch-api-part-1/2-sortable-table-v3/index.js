@@ -63,6 +63,9 @@ export default class SortableTable extends SortableTableV2 {
 
   createListeners() {
     super.createListeners();
+
+    this.handleScroll = this.handleScroll.bind(this);
+
     window.addEventListener('scroll', this.handleScroll);
   }
 
