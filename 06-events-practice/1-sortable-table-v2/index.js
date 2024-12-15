@@ -7,7 +7,6 @@ export default class SortableTableV2 extends SortableTableV1 {
   } = {}) {
     super(headersConfig, data);
     this.arrowElement = this.createArrowElement();
-    this.headerPointerDownHandler = this.handleHeaderPointerDown.bind(this);
     this.createListeners();
     this.sorted = sorted;
     if (this.sorted.id && this.sorted.order) {
@@ -52,11 +51,12 @@ export default class SortableTableV2 extends SortableTableV1 {
   }
 
   createListeners() {
+    this.headerPointerDownHandler = this.handleHeaderPointerDown.bind(this);
     this.subElements.header.addEventListener('pointerdown', this.headerPointerDownHandler);
   }
 
   destroyListeners() {
-    this.subElements.header.removeEventListener('click', this.headerPointerDownHandler);
+    this.subElements.header.removeEventListener('pointerdown', this.headerPointerDownHandler);
   }
 
   destroy() {
