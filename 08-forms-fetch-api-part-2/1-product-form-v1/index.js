@@ -17,8 +17,8 @@ export default class ProductForm {
     await this.loadData();
     this.element = this.createElement(this.createTemplate());
     this.selectSubElements();
-    this.createListeners();
     document.body.append(this.element);
+    this.createListeners();
     document.getElementsByName('subcategory')[0].value = this.productData.subcategory;
     this.subElements.productForm.querySelector(`#title`).value = this.productData.title;
     this.subElements.productForm.querySelector(`#quantity`).value = this.productData.quantity;
@@ -53,7 +53,7 @@ export default class ProductForm {
   createSelectOptionsTemplate() {
     return this.categories.map((category) => {
       return category.subcategories.map((subcategory) => {
-        return `<option value="${subcategory.id}">${category.title} &gt; ${subcategory.title}</option>`;
+        return `<option value="${escapeHtml(subcategory.id)}">${escapeHtml(category.title)} &gt; ${escapeHtml(subcategory.title)}</option>`;
       }).join('');
     }).join('');
   }
@@ -62,11 +62,11 @@ export default class ProductForm {
     return this.productData.images.map((image) => {
       return `<ul class="sortable-list">
             <li class="products-edit__imagelist-item sortable-list__item" style="">
-              <input type="hidden" name="url" value="${image.url}">
-              <input type="hidden" name="source" value="${image.source}">
+              <input type="hidden" name="url" value="${escapeHtml(image.url)}">
+              <input type="hidden" name="source" value="${escapeHtml(image.source)}">
               <span>
                 <img src="icon-grab.svg" data-grab-handle="" alt="grab">
-                <img class="sortable-table__cell-img" alt="Image" src="${image.url}">
+                <img class="sortable-table__cell-img" alt="Image" src="${escapeHtml(image.url)}">
                 <span>75462242_3746019958756848_838491213769211904_n.jpg</span>
               </span>
               <button type="button">
@@ -96,7 +96,7 @@ export default class ProductForm {
         <div data-element="imageListContainer">
           ${this.createImageTemplate()}
         </div>
-        <button type="button" name="uploadImage" class="button-primary-outline"><span>Загрузить</span></button>
+        <button id="buttonUploadImage" type="button" name="uploadImage" class="button-primary-outline"><span>Загрузить</span></button>
       </div>
       <div class="form-group form-group__half_left">
         <label class="form-label">Категория</label>
@@ -136,10 +136,69 @@ export default class ProductForm {
   }
 
   async save() {
+    const formData = new FormData(this.subElements.productForm);
+    const response = await fetchJson(this.url, {
+      method: this.productId ? 'PATCH' : 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: formData
+    });
     const customEvent = new CustomEvent('product-updated');
     this.element.dispatchEvent(customEvent, {
-      detail: new FormData(this.subElements.productForm)
+      detail: formData
     });
+  }
+
+  handleUploadImageClick = (event) => {
+    const inputElement = document.createElement('input');
+
+    inputElement.type = 'file';
+    inputElement.accept = 'image/*';
+
+    inputElement.onchange = async () => {
+      const [file] = inputElement.files; // берем первый файл из массива файлов
+
+      if (file) {
+        const formData = new FormData();
+
+        formData.append('image', file);
+
+        this.subElements.productForm.elements.uploadImage.classList.add('is-loading');
+
+        const result = await fetchJson('https://api.imgur.com/3/image', {
+          method: 'POST',
+          headers: {
+            Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
+          },
+          body: formData
+        });
+
+        this.subElements.productForm.elements.uploadImage.classList.remove('is-loading');
+
+        this.subElements.imageListContainer.append(this.createElement(
+          `<ul class="sortable-list">
+            <li class="products-edit__imagelist-item sortable-list__item" style="">
+              <input type="hidden" name="url" value="${escapeHtml(result.data.link)}">
+              <input type="hidden" name="source" value="${file.name}">
+              <span>
+                <img src="icon-grab.svg" data-grab-handle="" alt="grab">
+                <img class="sortable-table__cell-img" alt="Image" src="${escapeHtml(result.data.link)}">
+                <span>75462242_3746019958756848_838491213769211904_n.jpg</span>
+              </span>
+              <button type="button">
+                <img src="icon-trash.svg" data-delete-handle="" alt="delete">
+              </button>
+            </li>
+          </ul>`
+        ));
+
+        inputElement.remove();
+      }
+    };
+
+    document.body.append(inputElement);
+    inputElement.click();
   }
 
   onFormSubmit = (event) => {
@@ -148,10 +207,12 @@ export default class ProductForm {
   }
 
   createListeners() {
+    this.subElements.productForm.elements.uploadImage.addEventListener('click', this.handleUploadImageClick);
     this.subElements.productForm.addEventListener('submit', this.onFormSubmit);
   }
 
   destroyListeners() {
+    this.subElements.productForm.elements.uploadImage.removeEventListener('click', this.handleUploadImageClick);
     this.subElements.productForm.removeEventListener('submit', this.onFormSubmit);
   }
 
