@@ -87,14 +87,6 @@ export default class SortableList {
         document.addEventListener('pointermove', onPointerMove);
     }
 
-    pointerUpHandler = () => {
-        if (this.draggableItem) {
-            this.draggableItem.style = null;
-            this.draggableItem.classList.remove('sortable-list__item_dragging');
-            this.placeholder.replaceWith(this.draggableItem);
-        }
-    }
-
     createListeners() {
         this.pointerDownHandler = this.pointerDownHandler.bind(this);
         this.element.addEventListener('pointerdown', this.pointerDownHandler);
