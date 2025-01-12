@@ -2,13 +2,20 @@ export default class SortableList {
     element;
 
     constructor({items = []}) {
-        this.element = document.createElement('ul');
-        this.element.classList.add('sortable-list');
-        items.forEach((item) => {
-            item.classList.add('sortable-list__item');
-            this.element.append(item);
-        });
-        this.createListeners();
+        if (!Array.isArray(items)) {
+            if (items.tagName === 'UL' && items.classList.contains('sortable-list')) {
+                this.element = items;
+                this.createListeners();
+            }
+        } else {
+            this.element = document.createElement('ul');
+            this.element.classList.add('sortable-list');
+            items.forEach((item) => {
+                item.classList.add('sortable-list__item');
+                this.element.append(item);
+            });
+            this.createListeners();
+        }
     }
 
     createElement(template) {
