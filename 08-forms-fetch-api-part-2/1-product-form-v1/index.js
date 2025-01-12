@@ -60,20 +60,18 @@ export default class ProductForm {
 
   createImageTemplate() {
     return this.productData.images.map((image) => {
-      return `<ul class="sortable-list">
-            <li class="products-edit__imagelist-item sortable-list__item" style="">
-              <input type="hidden" name="url" value="${escapeHtml(image.url)}">
-              <input type="hidden" name="source" value="${escapeHtml(image.source)}">
-              <span>
-                <img src="icon-grab.svg" data-grab-handle="" alt="grab">
-                <img class="sortable-table__cell-img" alt="Image" src="${escapeHtml(image.url)}">
-                <span>75462242_3746019958756848_838491213769211904_n.jpg</span>
-              </span>
-              <button type="button">
-                <img src="icon-trash.svg" data-delete-handle="" alt="delete">
-              </button>
-            </li>
-          </ul>`
+      return `<li class="products-edit__imagelist-item sortable-list__item" style="">
+                <input type="hidden" name="url" value="${escapeHtml(image.url)}">
+                <input type="hidden" name="source" value="${escapeHtml(image.source)}">
+                <span>
+                  <img src="icon-grab.svg" data-grab-handle="" alt="grab">
+                  <img class="sortable-table__cell-img" alt="Image" src="${escapeHtml(image.url)}">
+                  <span>75462242_3746019958756848_838491213769211904_n.jpg</span>
+                </span>
+                <button type="button">
+                  <img src="icon-trash.svg" data-delete-handle="" alt="delete">
+                </button>
+              </li>`
     }).join('');
   }
 
@@ -94,7 +92,9 @@ export default class ProductForm {
       <div class="form-group form-group__wide" data-element="sortable-list-container">
         <label class="form-label">Фото</label>
         <div data-element="imageListContainer">
-          ${this.createImageTemplate()}
+          <ul class="sortable-list">
+            ${this.createImageTemplate()}
+          </ul>
         </div>
         <button id="buttonUploadImage" type="button" name="uploadImage" class="button-primary-outline"><span>Загрузить</span></button>
       </div>
