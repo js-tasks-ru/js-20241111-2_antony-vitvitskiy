@@ -2,13 +2,20 @@ export default class SortableList {
     element;
 
     constructor({items = []}) {
-        this.element = document.createElement('ul');
-        this.element.classList.add('sortable-list');
-        items.forEach((item) => {
-            item.classList.add('sortable-list__item');
-            this.element.append(item);
-        });
-        this.createListeners();
+        if (!Array.isArray(items)) {
+            if (items.tagName === 'UL' && items.classList.contains('sortable-list')) {
+                this.element = items;
+                this.createListeners();
+            }
+        } else {
+            this.element = document.createElement('ul');
+            this.element.classList.add('sortable-list');
+            items.forEach((item) => {
+                item.classList.add('sortable-list__item');
+                this.element.append(item);
+            });
+            this.createListeners();
+        }
     }
 
     createElement(template) {
@@ -37,8 +44,8 @@ export default class SortableList {
             return;
         }
 
-        const shiftX = event.clientX - this.draggableItem.getBoundingClientRect().left;
-        const shiftY = event.clientY - this.draggableItem.getBoundingClientRect().top;
+        const shiftX = event.clientX + window.scrollX - this.draggableItem.getBoundingClientRect().left;
+        const shiftY = event.clientY + window.scrollY - this.draggableItem.getBoundingClientRect().top;
 
         this.draggableItem.ondragstart = function() {
             return false;
@@ -67,8 +74,8 @@ export default class SortableList {
                 return;
             }
             
-            if (event.pageY < this.elementBelow.getBoundingClientRect().top - this.elementBelow.getBoundingClientRect().height / 2 
-                || event.pageY < this.elementBelow.getBoundingClientRect().bottom - this.elementBelow.getBoundingClientRect().height / 2) {
+            if (event.pageY - window.scrollY < this.elementBelow.getBoundingClientRect().top - this.elementBelow.getBoundingClientRect().height / 2 
+                || event.pageY - window.scrollY < this.elementBelow.getBoundingClientRect().bottom - this.elementBelow.getBoundingClientRect().height / 2) {
                 this.elementBelow.before(this.placeholder);
             } else {
                 this.elementBelow.after(this.placeholder);
